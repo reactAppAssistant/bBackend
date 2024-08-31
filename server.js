@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -27,6 +28,7 @@ mongoose.connect('mongodb+srv://rajrishavrj:passC0de12%23@cluster0.t3ufh.mongodb
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Start the server
 app.listen(PORT, () => {
