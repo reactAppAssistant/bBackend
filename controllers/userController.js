@@ -131,3 +131,74 @@ exports.getUserByEmail = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+// Follow a user by email
+exports.followUser = async (req, res) => {
+  const { currentUserEmail, targetUserEmail } = req.body;
+
+  try {
+    const currentUser = await User.findOne({ email: currentUserEmail });
+    const targetUser = await User.findOne({ email: targetUserEmail });
+
+    if (!currentUser || !targetUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (currentUser.following.includes(targetUser.email)) {
+      return res.status(400).json({ message: 'You are already following this user' });
+    }
+
+    currentUser.following.push(targetUser.email);
+    targetUser.followers.push(currentUser.email);
+
+    await currentUser.save();
+    await targetUser.save();
+
+    res.json({ message: 'User followed successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Unfollow a user by email
+exports.unfollowUser = async (req, res) => {
+  const { currentUserEmail, targetUserEmail } = req.body;
+
+  try {
+    const currentUser = await User.findOne({ email: currentUserEmail });
+    const targetUser = await User.findOne({ email: targetUserEmail });
+
+    if (!currentUser || !targetUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    currentUser.following.pull(targetUser.email);
+    targetUser.followers.pull(currentUser.email);
+
+    await currentUser.save();
+    await targetUser.save();
+
+    res.json({ message: 'User unfollowed successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Check if a user is following another user by email
+exports.isFollowing = async (req, res) => {
+  const { currentUserEmail, targetUserEmail } = req.body;
+
+  try {
+    const currentUser = await User.findOne({ email: currentUserEmail });
+    const targetUser = await User.findOne({ email: targetUserEmail });
+
+    if (!currentUser || !targetUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isFollowing = currentUser.following.includes(targetUser.email);
+    res.json({ isFollowing });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
