@@ -108,7 +108,7 @@ exports.isLoggedIn = async (req, res) => {
 // Get a list of all users with their names and usernames
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, 'fullName username email');  // Fetch fullName and username fields only
+    const users = await User.find({}, 'fullName username email followers following');  // Fetch fullName and username fields only
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -120,7 +120,7 @@ exports.getUserByEmail = async (req, res) => {
   const { email } = req.params;  // Get the email from the request parameters
 
   try {
-    const user = await User.findOne({ email }, 'fullName username email');  // Fetch fullName, username, and email fields
+    const user = await User.findOne({ email }, 'fullName username email followers following');  // Fetch fullName, username, and email fields
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
