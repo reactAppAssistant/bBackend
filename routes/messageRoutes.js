@@ -4,7 +4,7 @@ const messageController = require('../controllers/messageController');
 
 
 // Get all messages
-router.get('/getMessages', messageController.getMessages);
+// router.get('/getMessages', messageController.getMessages);
 
 // Send a message
 router.post('/sendMessage', messageController.sendMessage);
